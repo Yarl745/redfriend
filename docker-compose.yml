@@ -1,0 +1,45 @@
+version: "3.5"
+
+services:
+  db:
+    container_name: redfriendPostgres
+    image: postgres:10
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - ".env"
+    environment:
+      POSTGRES_USER: $PG_USER
+      POSTGRES_PASSWORD: $PG_PASSWORD
+      POSTGRES_DB: $PG_DB
+    networks:
+      - redfriendNet
+    volumes:
+      - redfriend_db_volume:/var/lib/postgresql
+
+  redis:
+    container_name: redfriendRedis
+    image: redis:5
+    restart: always
+    ports:
+      - 6379:6379
+    env_file:
+        - ".env"
+    entrypoint: redis-server --appendonly yes --requirepass $REDIS_PASS
+    volumes:
+      - redfriend_redis_volume:/data
+    networks:
+      - redfriendNet
+
+
+networks:
+  redfriendNet:
+    driver: bridge
+
+
+volumes:
+  redfriend_db_volume:
+    driver: local
+  redfriend_redis_volume:
+    driver: local

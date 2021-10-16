@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kpi-gorodok-deployment
+  labels:
+    app: bot
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bot
+  template:
+    metadata:
+      labels:
+        app: bot
+    spec:
+      containers:
+      - name: bot
+        image: kpi-gorodok-bot:0.0.0.0.1
+        ports:
+        - containerPort: 1313
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kpi-gorodok-service
+spec:
+  selector:
+    app: bot
+  ports:
+    - protocol: TCP
+      port: 1313
+      targetPort: 1313
